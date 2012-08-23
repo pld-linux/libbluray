@@ -1,9 +1,7 @@
 #
-# TODO:
-#  Build with bdjava (0.2.1 tarball doesn't have all necessary files)
-#
 # Conditional build:
 %bcond_without	static_libs	# don't build static libraries
+%bcond_without	java		# BD-Java
 #
 Summary:	Library to access Blu-Ray disks for video playback
 Summary(pl.UTF-8):	Biblioteka dostępu do dysków Blu-Ray w celu odtwarzania filmów
@@ -21,6 +19,12 @@ BuildRequires:	doxygen
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel >= 1:2.6.0
 BuildRequires:	pkgconfig
+%if %{with java}
+BuildRequires:	ant
+BuildRequires:	jdk
+Provides:	%{name}(jvm) = %{version}-%{relaese}
+Suggests:	%{name}-java = %{version}-%{release}
+%endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -63,6 +67,19 @@ Static libbluray library.
 %description static -l pl.UTF-8
 Statyczna biblioteka libbluray.
 
+%package java
+Summary:	BD-Java support classes for libbluray
+Summary(pl.UTF-8):	Klasy obsługujące BD-Java dla libbluray
+Group:		Libraries/Java
+Requires:	%{name}(jvm) = %{version}-%{release}
+Requires:	jre
+
+%description java
+BD-Java support classes for libbluray.
+
+%description java -l pl.UTF-8
+Klasy obsługujące BD-Java dla libbluray.
+
 %prep
 %setup -q
 
@@ -73,6 +90,7 @@ Statyczna biblioteka libbluray.
 %{__autoheader}
 %{__automake}
 %configure \
+	%{?with_java:--enable-bdjava --with-jdk=%{_jvmdir}/java} \
 	%{__enable_disable static_libs static}
 %{__make}
 
@@ -84,6 +102,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
 
+%if %{with java}
+install -D src/.libs/libbluray.jar $RPM_BUILD_ROOT%{_javadir}/libbluray.jar
+%endif
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -92,7 +114,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc README.txt
+%doc ChangeLog README.txt
 %attr(755,root,root) %{_libdir}/libbluray.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbluray.so.1
 
@@ -106,4 +128,12 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libbluray.a
+%endif
+
+%if %{with java}
+# NOTE: it's Java package loaded by libbluray itself, not Java API to libbluray
+# thus -java instead of java- namespace.
+%files java
+%defattr(644,root,root,755)
+%{_javadir}/libbluray.jar
 %endif
