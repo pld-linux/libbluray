@@ -7,7 +7,7 @@ Summary:	Library to access Blu-Ray disks for video playback
 Summary(pl.UTF-8):	Biblioteka dostępu do dysków Blu-Ray w celu odtwarzania filmów
 Name:		libbluray
 Version:	0.2.2
-Release:	1
+Release:	2
 License:	LGPL v2+
 Group:		Libraries
 Source0:	ftp://ftp.videolan.org/pub/videolan/libbluray/%{version}/%{name}-%{version}.tar.bz2
@@ -22,7 +22,7 @@ BuildRequires:	pkgconfig
 %if %{with java}
 BuildRequires:	ant
 BuildRequires:	jdk
-Provides:	%{name}(jvm) = %{version}-%{relaese}
+Provides:	%{name}(jvm) = %{version}-%{release}
 Suggests:	%{name}-java = %{version}-%{release}
 %endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
