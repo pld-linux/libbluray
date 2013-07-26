@@ -6,19 +6,22 @@
 Summary:	Library to access Blu-Ray disks for video playback
 Summary(pl.UTF-8):	Biblioteka dostępu do dysków Blu-Ray w celu odtwarzania filmów
 Name:		libbluray
-Version:	0.2.2
-Release:	2
+Version:	0.3.0
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
-Source0:	ftp://ftp.videolan.org/pub/videolan/libbluray/%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	cb3254de43276861ea6b07c603f4651c
+Source0:	ftp://ftp.videolan.org/pub/videolan/libbluray/last/%{name}-%{version}.tar.bz2
+# Source0-md5:	d04a2af21fa154237ea2c693cf05e0ac
+Patch0:		%{name}-missing.patch
 URL:		http://www.videolan.org/developers/libbluray.html
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 BuildRequires:	doxygen
+BuildRequires:	freetype-devel >= 2
 BuildRequires:	libtool
 BuildRequires:	libxml2-devel >= 1:2.6.0
 BuildRequires:	pkgconfig
+Requires:	libxml2 >= 1:2.6.0
 %if %{with java}
 BuildRequires:	ant
 BuildRequires:	jdk
@@ -82,6 +85,7 @@ Klasy obsługujące BD-Java dla libbluray.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %{__libtoolize}
@@ -90,7 +94,8 @@ Klasy obsługujące BD-Java dla libbluray.
 %{__autoheader}
 %{__automake}
 %configure \
-	%{?with_java:--enable-bdjava --with-jdk=%{_jvmdir}/java} \
+	%{?with_java:JDK_HOME=%{_jvmdir}/java} \
+	%{?with_java:--enable-bdjava} \
 	%{__enable_disable static_libs static}
 %{__make}
 
@@ -98,13 +103,10 @@ Klasy obsługujące BD-Java dla libbluray.
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	jardir=%{_prefix}/lib/libbluray
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
-
-%if %{with java}
-install -D src/.libs/libbluray.jar $RPM_BUILD_ROOT%{_javadir}/libbluray.jar
-%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -115,6 +117,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog README.txt
+%attr(755,root,root) %{_bindir}/bd_info
 %attr(755,root,root) %{_libdir}/libbluray.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbluray.so.1
 
@@ -135,5 +138,6 @@ rm -rf $RPM_BUILD_ROOT
 # thus -java instead of java- namespace.
 %files java
 %defattr(644,root,root,755)
-%{_javadir}/libbluray.jar
+%dir %{_prefix}/lib/libbluray
+%{_prefix}/lib/libbluray/libbluray.jar
 %endif
