@@ -6,12 +6,12 @@
 Summary:	Library to access Blu-Ray disks for video playback
 Summary(pl.UTF-8):	Biblioteka dostępu do dysków Blu-Ray w celu odtwarzania filmów
 Name:		libbluray
-Version:	0.7.0
-Release:	2
+Version:	0.9.0
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://download.videolan.org/videolan/libbluray/%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	efad766330164f0c7c7cb18f66389870
+# Source0-md5:	a4e8077b9fd82349c767cef2ba9bd750
 URL:		http://www.videolan.org/developers/libbluray.html
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -99,7 +99,8 @@ Klasy obsługujące BD-Java dla libbluray.
 	%{?with_java:JDK_HOME=%{_jvmdir}/java} \
 	%{?with_java:--enable-bdjava} \
 	--disable-silent-rules \
-	%{__enable_disable static_libs static}
+	%{__enable_disable static_libs static} \
+	--enable-udf
 %{__make}
 
 %install
