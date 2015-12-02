@@ -6,12 +6,12 @@
 Summary:	Library to access Blu-Ray disks for video playback
 Summary(pl.UTF-8):	Biblioteka dostępu do dysków Blu-Ray w celu odtwarzania filmów
 Name:		libbluray
-Version:	0.9.1
+Version:	0.9.2
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://download.videolan.org/videolan/libbluray/%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	9c1693c22c2b0c8cad29ec6dd97518bc
+# Source0-md5:	836b2de16547776bf2726166cf796f13
 URL:		http://www.videolan.org/developers/libbluray.html
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
