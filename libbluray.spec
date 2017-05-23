@@ -1,17 +1,17 @@
 #
 # Conditional build:
-%bcond_without	static_libs	# don't build static libraries
+%bcond_without	static_libs	# static library
 %bcond_without	java		# BD-Java
 #
 Summary:	Library to access Blu-Ray disks for video playback
 Summary(pl.UTF-8):	Biblioteka dostępu do dysków Blu-Ray w celu odtwarzania filmów
 Name:		libbluray
-Version:	0.9.3
+Version:	1.0.0
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://download.videolan.org/videolan/libbluray/%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	c51fd34f933431559371be30b59cff51
+# Source0-md5:	a1cc86a5a78d4212141b06ed098c672c
 URL:		http://www.videolan.org/developers/libbluray.html
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -24,7 +24,7 @@ BuildRequires:	pkgconfig
 Requires:	libxml2 >= 1:2.6.0
 %if %{with java}
 BuildRequires:	ant
-BuildRequires:	jdk
+BuildRequires:	jdk >= 1.7
 Provides:	%{name}(jvm) = %{version}-%{release}
 Suggests:	%{name}-java = %{version}-%{release}
 %endif
@@ -97,7 +97,7 @@ Klasy obsługujące BD-Java dla libbluray.
 %{__automake}
 %configure \
 	%{?with_java:JDK_HOME=%{_jvmdir}/java} \
-	%{?with_java:--enable-bdjava} \
+	%{!?with_java:--disable-bdjava --disable-bdjava-jar} \
 	--disable-silent-rules \
 	%{__enable_disable static_libs static} \
 	--enable-udf
@@ -122,7 +122,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc ChangeLog README.txt
 %attr(755,root,root) %{_bindir}/bd_info
 %attr(755,root,root) %{_libdir}/libbluray.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbluray.so.1
+%attr(755,root,root) %ghost %{_libdir}/libbluray.so.2
 
 %files devel
 %defattr(644,root,root,755)
