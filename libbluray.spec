@@ -24,7 +24,7 @@ BuildRequires:	pkgconfig
 Requires:	libxml2 >= 1:2.6.0
 %if %{with java}
 BuildRequires:	ant
-BuildRequires:	jdk >= 1.7
+BuildRequires:	jdk >= 1.8
 Provides:	%{name}(jvm) = %{version}-%{release}
 Suggests:	%{name}-java = %{version}-%{release}
 %endif
