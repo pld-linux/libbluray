@@ -6,12 +6,12 @@
 Summary:	Library to access Blu-Ray disks for video playback
 Summary(pl.UTF-8):	Biblioteka dostępu do dysków Blu-Ray w celu odtwarzania filmów
 Name:		libbluray
-Version:	1.2.0
+Version:	1.2.1
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	http://download.videolan.org/videolan/libbluray/%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	c3a8485ed713fc09c26d24cd1e022e0c
+# Source0-md5:	7191fea60f6b5b328dc02e57b5ef0bf2
 URL:		http://www.videolan.org/developers/libbluray.html
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -19,12 +19,15 @@ BuildRequires:	doxygen
 BuildRequires:	fontconfig-devel
 BuildRequires:	freetype-devel >= 2
 BuildRequires:	libtool
+BuildRequires:	libudfread-devel >= 1.1.0
 BuildRequires:	libxml2-devel >= 1:2.6.0
 BuildRequires:	pkgconfig
+Requires:	libudfread >= 1.1.0
 Requires:	libxml2 >= 1:2.6.0
 %if %{with java}
 BuildRequires:	ant
 BuildRequires:	jdk >= 1.8
+BuildRequires:	rpmbuild(macros) >= 1.527
 Provides:	%{name}(jvm) = %{version}-%{release}
 Suggests:	%{name}-java = %{version}-%{release}
 %endif
@@ -53,6 +56,7 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	fontconfig-devel
 Requires:	freetype-devel >= 2
+Requires:	libudfread-devel >= 1.1.0
 Requires:	libxml2-devel >= 1:2.6.0
 
 %description devel
@@ -121,6 +125,8 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc ChangeLog README.txt
 %attr(755,root,root) %{_bindir}/bd_info
+%attr(755,root,root) %{_bindir}/bd_list_titles
+%attr(755,root,root) %{_bindir}/bd_splice
 %attr(755,root,root) %{_libdir}/libbluray.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libbluray.so.2
 
