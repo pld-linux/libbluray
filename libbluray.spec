@@ -12,6 +12,7 @@ License:	LGPL v2+
 Group:		Libraries
 Source0:	https://download.videolan.org/videolan/libbluray/%{version}/%{name}-%{version}.tar.bz2
 # Source0-md5:	55d69915d56d491637b8378ca54c3b7a
+Patch0:		java.patch
 URL:		http://www.videolan.org/developers/libbluray.html
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -92,6 +93,7 @@ Klasy obsługujące BD-Java dla libbluray.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %build
 %{__libtoolize}
