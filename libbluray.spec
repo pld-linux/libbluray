@@ -23,6 +23,7 @@ BuildRequires:	libtool
 BuildRequires:	libudfread-devel >= 1.1.1
 BuildRequires:	libxml2-devel >= 1:2.6.0
 BuildRequires:	pkgconfig
+BuildRequires:	rpm-javaprov
 Requires:	libudfread >= 1.1.1
 Requires:	libxml2 >= 1:2.6.0
 %if %{with java}
@@ -95,14 +96,21 @@ Klasy obsługujące BD-Java dla libbluray.
 %setup -q
 
 %build
+%{?with_java:export JAVA_HOME="%{java_home}"}
 %{__libtoolize}
 %{__aclocal} -I m4
 %{__autoconf}
 %{__autoheader}
 %{__automake}
 %configure \
-	%{?with_java:JDK_HOME=%{java_home}} \
-	%{!?with_java:--disable-bdjava-jar} \
+%if %{with java}
+	JDK_HOME="%{java_home}" \
+%if %{_ver_ge %default_jdk_version 9}
+	--with-java9 \
+%endif
+%else
+	--disable-bdjava-jar \
+%endif
 	--disable-silent-rules \
 	%{__enable_disable static_libs static}
 
