@@ -2,7 +2,8 @@
 # Conditional build:
 %bcond_without	static_libs	# static library
 %bcond_without	java		# BD-Java
-#
+
+%{?with_java:%{?use_default_jdk}}
 Summary:	Library to access Blu-Ray disks for video playback
 Summary(pl.UTF-8):	Biblioteka dostępu do dysków Blu-Ray w celu odtwarzania filmów
 Name:		libbluray
@@ -26,8 +27,8 @@ Requires:	libudfread >= 1.1.1
 Requires:	libxml2 >= 1:2.6.0
 %if %{with java}
 BuildRequires:	ant
-BuildRequires:	jdk >= 1.8
-BuildRequires:	rpmbuild(macros) >= 1.527
+%buildrequires_jdk
+BuildRequires:	rpmbuild(macros) >= 2.021
 Provides:	%{name}(jvm) = %{version}-%{release}
 Suggests:	%{name}-java = %{version}-%{release}
 %endif
@@ -100,7 +101,7 @@ Klasy obsługujące BD-Java dla libbluray.
 %{__autoheader}
 %{__automake}
 %configure \
-	%{?with_java:JDK_HOME=%{_jvmdir}/java} \
+	%{?with_java:JDK_HOME=%{java_home}} \
 	%{!?with_java:--disable-bdjava-jar} \
 	--disable-silent-rules \
 	%{__enable_disable static_libs static}
