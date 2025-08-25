@@ -1,5 +1,6 @@
 #
 # Conditional build:
+%bcond_without	apidocs		# API documentation
 %bcond_without	static_libs	# static library
 %bcond_without	java		# BD-Java
 
@@ -7,29 +8,31 @@
 Summary:	Library to access Blu-Ray disks for video playback
 Summary(pl.UTF-8):	Biblioteka dostępu do dysków Blu-Ray w celu odtwarzania filmów
 Name:		libbluray
-Version:	1.3.4
-Release:	2
+Version:	1.4.0
+Release:	1
 License:	LGPL v2+
 Group:		Libraries
-Source0:	https://download.videolan.org/videolan/libbluray/%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	c744e610f539ba4b31280185ad48f1e1
+Source0:	https://download.videolan.org/videolan/libbluray/%{version}/%{name}-%{version}.tar.xz
+# Source0-md5:	13bda98cbb83cfb582f8a30c780da63d
 URL:		http://www.videolan.org/developers/libbluray.html
-BuildRequires:	autoconf >= 2.50
-BuildRequires:	automake
-BuildRequires:	doxygen
+%{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	fontconfig-devel
 BuildRequires:	freetype-devel >= 2
-BuildRequires:	libtool
-BuildRequires:	libudfread-devel >= 1.1.1
+BuildRequires:	libudfread-devel >= 1.2.0
 BuildRequires:	libxml2-devel >= 1:2.6.0
+BuildRequires:	meson >= 1.8.1-2
+BuildRequires:	ninja
 BuildRequires:	pkgconfig
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpm-javaprov
-Requires:	libudfread >= 1.1.1
+BuildRequires:	rpmbuild(macros) >= 2.042
+BuildRequires:	tar >= 1:1.22
+BuildRequires:	xz
+Requires:	libudfread >= 1.2.0
 Requires:	libxml2 >= 1:2.6.0
 %if %{with java}
 BuildRequires:	ant
 %buildrequires_jdk
-BuildRequires:	rpmbuild(macros) >= 2.021
 Provides:	%{name}(jvm) = %{version}-%{release}
 Suggests:	%{name}-java = %{version}-%{release}
 %endif
@@ -58,7 +61,7 @@ Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	fontconfig-devel
 Requires:	freetype-devel >= 2
-Requires:	libudfread-devel >= 1.1.1
+Requires:	libudfread-devel >= 1.2.0
 Requires:	libxml2-devel >= 1:2.6.0
 
 %description devel
@@ -92,37 +95,52 @@ BD-Java support classes for libbluray.
 %description java -l pl.UTF-8
 Klasy obsługujące BD-Java dla libbluray.
 
+%package apidocs
+Summary:        API documentation for libbluray library
+Summary(pl.UTF-8):      Dokumentacja API biblioteki libbluray
+Group:          Documentation
+BuildArch:      noarch
+
+%description apidocs
+API documentation for libbluray library.
+
+%description apidocs -l pl.UTF-8
+Dokumentacja API biblioteki libbluray.
+
 %prep
 %setup -q
 
 %build
-%{?with_java:export JAVA_HOME="%{java_home}"}
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoconf}
-%{__autoheader}
-%{__automake}
-%configure \
 %if %{with java}
-	JDK_HOME="%{java_home}" \
+export JAVA_HOME="%{java_home}"
+export JAVAC="%{java_home}/bin/javac"
+%endif
+%meson \
+	%{!?with_static_libs:--default-library=shared} \
+%if %{with java}
+	-Dbdj_jar=enabled \
+	-Djdk_home="%{java_home}" \
 %if %{_ver_ge %default_jdk_version 9}
-	--with-java9 \
+	-Djava9=true \
+%else
+	-Djava9=false \
 %endif
 %else
-	--disable-bdjava-jar \
+	-Dbdj_jar=disabled \
 %endif
-	--disable-silent-rules \
-	%{__enable_disable static_libs static}
+	-Denable_docs=%{__true_false apidocs} \
+	-Dfontconfig=enabled \
+	-Dfreetype=enabled \
+	-Dlibxml2=enabled
 
-%{__make}
+%meson_build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+%meson_install
 
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
+%{?with_apidocs:%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/doc/libbluray}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -137,7 +155,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/bd_list_titles
 %attr(755,root,root) %{_bindir}/bd_splice
 %attr(755,root,root) %{_libdir}/libbluray.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbluray.so.2
+%attr(755,root,root) %ghost %{_libdir}/libbluray.so.3
 
 %files devel
 %defattr(644,root,root,755)
@@ -158,4 +176,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %{_javadir}/libbluray-awt-j2se-%{version}.jar
 %{_javadir}/libbluray-j2se-%{version}.jar
+%endif
+
+%if %{with apidocs}
+%files apidocs
+%defattr(644,root,root,755)
+%doc build/doc/html/*
 %endif
