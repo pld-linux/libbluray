@@ -14,6 +14,7 @@ License:	LGPL v2+
 Group:		Libraries
 Source0:	https://download.videolan.org/videolan/libbluray/%{version}/%{name}-%{version}.tar.xz
 # Source0-md5:	e9d2fcb48ab14a43fe48797db4429437
+Patch0:		javac.patch
 URL:		http://www.videolan.org/developers/libbluray.html
 %{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	fontconfig-devel
@@ -109,6 +110,7 @@ Dokumentacja API biblioteki libbluray.
 
 %prep
 %setup -q
+%patch -P0 -p1
 
 %build
 %if %{with java}
