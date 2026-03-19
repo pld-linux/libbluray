@@ -1,0 +1,10 @@
+--- libbluray-1.4.1/src/libbluray/bdj/meson.build.orig	2026-03-19 23:57:21.180827516 +0100
++++ libbluray-1.4.1/src/libbluray/bdj/meson.build	2026-03-20 00:00:04.369813641 +0100
+@@ -2,6 +2,7 @@
+ # SPDX-License-Identifier: MIT
+ 
+ java_src_version = '1.5'
++java_src_version_asm = '1.5'
+ 
+ ant = find_program('ant', required: get_option('bdj_jar'), disabler: true)
+ 
