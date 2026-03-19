@@ -8,12 +8,12 @@
 Summary:	Library to access Blu-Ray disks for video playback
 Summary(pl.UTF-8):	Biblioteka dostępu do dysków Blu-Ray w celu odtwarzania filmów
 Name:		libbluray
-Version:	1.4.0
+Version:	1.4.1
 Release:	1
 License:	LGPL v2+
 Group:		Libraries
 Source0:	https://download.videolan.org/videolan/libbluray/%{version}/%{name}-%{version}.tar.xz
-# Source0-md5:	13bda98cbb83cfb582f8a30c780da63d
+# Source0-md5:	e9d2fcb48ab14a43fe48797db4429437
 URL:		http://www.videolan.org/developers/libbluray.html
 %{?with_apidocs:BuildRequires:	doxygen}
 BuildRequires:	fontconfig-devel
@@ -154,12 +154,12 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_bindir}/bd_info
 %attr(755,root,root) %{_bindir}/bd_list_titles
 %attr(755,root,root) %{_bindir}/bd_splice
-%attr(755,root,root) %{_libdir}/libbluray.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libbluray.so.3
+%{_libdir}/libbluray.so.*.*.*
+%ghost %{_libdir}/libbluray.so.3
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libbluray.so
+%{_libdir}/libbluray.so
 %{_includedir}/libbluray
 %{_pkgconfigdir}/libbluray.pc
 
